@@ -355,9 +355,9 @@ public class Robot extends IterativeRobot {
         	liftDown = false;
         	
         	if(auxStick.getRawButton(3) && !liftUpperLimit.get() && liftEncoder.getDistance() < upperSetPoint){  //up
-            	lift.set(0.9);
+            	lift.set(0.5);
             }else if(auxStick.getRawButton(2) && !liftLowerLimit.get() && liftEncoder.getDistance() > lowerSetPoint){  //down
-            	lift.set(-0.9);
+            	lift.set(-0.5);
             
             }else if(auxCard.getRawButton(11)){ //set point //debug me!!!!!!!!!!!!!!!!!!!
             	if(liftEncoder.getDistance() > 200){ 
@@ -373,7 +373,7 @@ public class Robot extends IterativeRobot {
             	lift.set(0);                            
             }
         }else{ //auto lift
-        	if(liftUpperLimit.get() || (liftLowerLimit.get() && !toteInRobot.get())){//stop at upper limits
+        	if(liftLowerLimit.get() && !toteInRobot.get()){//stop at upper limits
         		liftUp = false;
         		liftDown = false;
         	}else{
@@ -382,7 +382,7 @@ public class Robot extends IterativeRobot {
         			liftDown = false;
 				
         		}else if(liftUp){ //go up to dogs
-        			if(liftEncoder.getDistance() > (upperSetPoint)){
+        			if(liftEncoder.getDistance() > (upperSetPoint) || liftUpperLimit.get()){
         				liftUp = false;
         				liftDown = true;
         			}
@@ -390,7 +390,7 @@ public class Robot extends IterativeRobot {
         			lift.set(0.75);
 				
         		}else if(liftDown){//go down to bottom
-        			if(liftEncoder.getDistance() < (lowerSetPoint + 20)){
+        			if(liftEncoder.getDistance() < (lowerSetPoint) ){
         				liftUp = false;
         				liftDown = false;
         			}
@@ -447,8 +447,10 @@ public class Robot extends IterativeRobot {
         		leftPicker.set(0);
         		rightPicker.set(0);		
         	}
+        	
         	if(liftEncoder.getDistance() > (upperSetPoint + 70)){
         		dogs.set(true);
+        		System.out.println("open da dogs");
         	}else if(auxStick.getRawButton(6)){
         		dogs.set(true);
         	}else{
