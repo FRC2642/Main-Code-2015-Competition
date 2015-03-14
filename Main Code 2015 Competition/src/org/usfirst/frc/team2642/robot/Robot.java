@@ -51,7 +51,6 @@ public class Robot extends IterativeRobot {
     	drive.setInvertedMotor(MotorType.kFrontLeft, true);
     	drive.setInvertedMotor(MotorType.kRearRight, true);
     	
-    	
     	rightPicker = new Talon(6);
     	leftPicker = new Talon(5);
     	lift = new Talon(4);
@@ -65,7 +64,6 @@ public class Robot extends IterativeRobot {
     	pusher = new Solenoid(1);
     	flipper = new Solenoid(2);
     	
-    	
     }
     
     /**
@@ -78,8 +76,7 @@ public class Robot extends IterativeRobot {
     	backLeftEncoder.reset();
     	liftEncoder.reset();
     	//compressor.start();
-    	
-    	
+ 	
     }
 
     /**
@@ -321,8 +318,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-
-    	
+	
         //arcade drive
         if(driveStick.getRawButton(1)){
         	drive.arcadeDrive(driveStick.getY(), driveStick.getX());
@@ -351,7 +347,6 @@ public class Robot extends IterativeRobot {
         	lift.set(0);                            
         }
         */
-      
         
         //human overide
         if(auxCard.getRawButton(12) || auxStick.getRawButton(3) || auxStick.getRawButton(2) || auxStick.getRawButton(10)) {
