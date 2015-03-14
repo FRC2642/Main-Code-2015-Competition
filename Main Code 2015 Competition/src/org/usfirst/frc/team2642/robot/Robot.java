@@ -349,7 +349,7 @@ public class Robot extends IterativeRobot {
         */
         
         //human overide
-        if(auxCard.getRawButton(12) || auxStick.getRawButton(3) || auxStick.getRawButton(2) || auxStick.getRawButton(10)) {
+        if(auxStick.getRawButton(3) || auxStick.getRawButton(2) || auxStick.getRawButton(10)) {
         	
         	liftUp = false; //stop auto lift
         	liftDown = false;
@@ -359,7 +359,7 @@ public class Robot extends IterativeRobot {
             }else if(auxStick.getRawButton(2) && !liftLowerLimit.get() && liftEncoder.getDistance() > lowerSetPoint){  //down
             	lift.set(-0.5);
             
-            }else if(auxCard.getRawButton(11)){ //set point //debug me!!!!!!!!!!!!!!!!!!!
+            }else if(false){ //set point //debug me!!!!!!!!!!!!!!!!!!!
             	if(liftEncoder.getDistance() > 200){ 
     				lift.set(-0.5);
     			}else if(liftEncoder.getDistance() < 140){
@@ -419,8 +419,8 @@ public class Robot extends IterativeRobot {
         	}else if(auxStick.getRawButton(1) && unloadCounter >= 25){ //open dogs push and reverses pickers
         		dogs.set(true);
         		pusher.set(true);
-        		rightPicker.set(-0.6);
-        		leftPicker.set(0.6);
+        		rightPicker.set(-0.4);
+        		leftPicker.set(0.4);
         		unloadCounter++;
         	}else{ //do nothing
         		dogs.set(false);
@@ -451,13 +451,13 @@ public class Robot extends IterativeRobot {
         	if(liftEncoder.getDistance() > (upperSetPoint + 70)){
         		dogs.set(true);
         		System.out.println("open da dogs");
-        	}else if(auxStick.getRawButton(6)){
+        	}else if(auxCard.getRawButton(11)){
         		dogs.set(true);
         	}else{
         		dogs.set(false);
         	}
         
-        	if(auxStick.getRawButton(7)){
+        	if(auxCard.getRawButton(4)){
         		pusher.set(true);
         	}else{
         		pusher.set(false);
