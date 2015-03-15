@@ -349,7 +349,7 @@ public class Robot extends IterativeRobot {
         */
         
         //human overide
-        if(auxStick.getRawButton(3) || auxStick.getRawButton(2) || auxStick.getRawButton(10)) {
+        if(auxStick.getRawButton(3) || auxStick.getRawButton(2) || auxStick.getRawButton(10) || auxCard.getRawButton(12)) {
         	
         	liftUp = false; //stop auto lift
         	liftDown = false;
@@ -451,16 +451,16 @@ public class Robot extends IterativeRobot {
         	if(liftEncoder.getDistance() > (upperSetPoint + 70)){
         		dogs.set(true);
         		System.out.println("open da dogs");
-        	}else if(auxCard.getRawButton(11)){
-        		dogs.set(true);
-        	}else{
+        	}else if(auxCard.getRawButton(11)){//these are wired backwards
         		dogs.set(false);
+        	}else{
+        		dogs.set(true);
         	}
         
         	if(auxCard.getRawButton(4)){
-        		pusher.set(true);
-        	}else{
         		pusher.set(false);
+        	}else{
+        		pusher.set(true);
         	}
         }
 //============================================================================================ 
