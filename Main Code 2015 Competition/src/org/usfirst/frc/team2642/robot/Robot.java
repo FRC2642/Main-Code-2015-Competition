@@ -34,6 +34,7 @@ public class Robot extends IterativeRobot {
 	boolean liftUp;
 	boolean liftDown;
 	int autoLoopCounter;
+	int autoLiftCounter;
 	double Kp = 0.04;
 	double angle;
     int unloadCounter;
@@ -350,7 +351,7 @@ public class Robot extends IterativeRobot {
         
         //human overide
         if(auxStick.getRawButton(3) || auxStick.getRawButton(2) || auxStick.getRawButton(10) || auxCard.getRawButton(12)) {
-        	
+        	autoLiftCounter = 0;
         	liftUp = false; //stop auto lift
         	liftDown = false;
         	
@@ -373,6 +374,7 @@ public class Robot extends IterativeRobot {
             	lift.set(0);                            
             }
         }else{ //auto lift
+        	
         	if(liftLowerLimit.get() && !toteInRobot.get()){//stop at upper limits
         		liftUp = false;
         		liftDown = false;
@@ -382,7 +384,7 @@ public class Robot extends IterativeRobot {
         			liftDown = false;
 				
         		}else if(liftUp){ //go up to dogs
-        			if(liftEncoder.getDistance() > (upperSetPoint) || liftUpperLimit.get()){
+        			if(liftEncoder.getDistance() > (upperSetPoint + 40) || liftUpperLimit.get()){
         				liftUp = false;
         				liftDown = true;
         			}
@@ -390,15 +392,18 @@ public class Robot extends IterativeRobot {
         			lift.set(0.75);
 				
         		}else if(liftDown){//go down to bottom
+        			autoLiftCounter++;
         			if(liftEncoder.getDistance() < (lowerSetPoint) ){
         				liftUp = false;
         				liftDown = false;
         			}
-				
-        			lift.set(-0.75);
+        			if (autoLiftCounter < 100) {
+            			lift.set(-0.75);
+        			}
 	   
         		}else{
         			lift.set(0);
+        			autoLiftCounter = 0;
         		}	
         	}
         }
@@ -448,7 +453,7 @@ public class Robot extends IterativeRobot {
         		rightPicker.set(0);		
         	}
         	
-        	if(liftEncoder.getDistance() > (upperSetPoint + 70)){
+        	if(liftEncoder.getDistance() > (upperSetPoint + 90)){
         		dogs.set(true);
         		System.out.println("open da dogs");
         	}else if(auxCard.getRawButton(11)){//these are wired backwards
