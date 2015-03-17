@@ -60,6 +60,7 @@ public class Robot extends IterativeRobot {
     	liftUpperLimit = new DigitalInput(8);
     	liftLowerLimit = new DigitalInput(9);
     	toteInRobot = new DigitalInput(4);
+    	backLeftEncoder = new Encoder(2, 3);
     	
     	compressor = new Compressor(0);
     	dogs = new Solenoid(0);
@@ -74,21 +75,33 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
     	autoLoopCounter = 0;
     	gyro.reset();
-    	backRightEncoder.reset();
+        //backRightEncoder.reset();
     	backLeftEncoder.reset();
     	liftEncoder.reset();
-    	//compressor.start();
+    	compressor.start();
  	
-    }
-
-    /**
-     * This function is called periodically during autonomous
-     */
-    public void autonomousPeriodic() {
-    	//put in gyro crab straight
-    	/*
-    	while(backLeftEncoder.getDistance() < 50){ //drive to first box
-    		drive.arcadeDrive(-0.3, 0);
+    	
+    	while(!toteInRobot.get()){ //pick box 
+    		drive.arcadeDrive(-0.4, 0);
+    		rightPicker.set(0.6);
+    		leftPicker.set(-0.6);
+    		lift.set(0);
+    		dogs.set(false);
+    		pusher.set(false);
+    		
+    	}
+    	
+    	while(liftEncoder.getDistance() < 400){ //lift up
+    		drive.arcadeDrive(0, 0);
+    		rightPicker.set(0);
+    		leftPicker.set(0);
+    		lift.set(0.8);
+    		dogs.set(false);
+    		pusher.set(false);
+    	}
+    	
+    	while(gyro.getAngle() < 85){ //turn right 45
+    		drive.arcadeDrive(0, 0.7);
     		rightPicker.set(0);
     		leftPicker.set(0);
     		lift.set(0);
@@ -97,6 +110,63 @@ public class Robot extends IterativeRobot {
     	}
     	backLeftEncoder.reset();
     	
+    	while(backLeftEncoder.getDistance() < 1450){ //drive 4ward 
+    		drive.arcadeDrive(-0.7, 0);
+    		rightPicker.set(0);
+    		leftPicker.set(0);
+    		lift.set(0);
+    		dogs.set(false);
+    		pusher.set(false);
+    	}
+    	backLeftEncoder.reset();
+    	
+    	while(gyro.getAngle() < 175){ //turn right 45
+    		drive.arcadeDrive(0, 0.7);
+    		rightPicker.set(0);
+    		leftPicker.set(0);
+    		lift.set(0);
+    		dogs.set(false);
+    		pusher.set(false);
+    	}
+    	backLeftEncoder.reset();
+    	
+    	while(!liftLowerLimit.get()){ //lift down
+    		drive.arcadeDrive(0, 0);
+    		rightPicker.set(0);
+    		leftPicker.set(0);
+    		lift.set(-0.8);
+    		dogs.set(false);
+    		pusher.set(false);
+    	}
+    	
+    	while(backLeftEncoder.getDistance() > -400){ //do unload
+    		drive.arcadeDrive(0.5, 0);
+    		rightPicker.set(-0.5);//reverse rollers
+    		leftPicker.set(0.5);
+    		lift.set(0);
+    		dogs.set(true);
+    		pusher.set(true);
+    	}
+    }
+    
+    
+    
+
+    /**
+     * This function is called periodically during autonomous
+     */
+    public void autonomousPeriodic() {
+    	//put in gyro crab straight
+    	
+    		drive.arcadeDrive(0, 0);
+    		rightPicker.set(0);
+    		leftPicker.set(0);
+    		lift.set(0);
+    		dogs.set(false);
+    		pusher.set(false);
+    		System.out.println("stop");
+    	Timer.delay(0.05);
+    	/*
     	while(!toteInRobot.get()){ //pick box 
     		drive.arcadeDrive(0, 0);
     		rightPicker.set(0.5);
@@ -341,16 +411,9 @@ public class Robot extends IterativeRobot {
     		dogs.set(true);
     		pusher.set(true);
     	}
-    	
-    	while(true){ //stop
-    		drive.arcadeDrive(0, 0);
-    		rightPicker.set(0);
-    		leftPicker.set(0);
-    		lift.set(0);
-    		dogs.set(false);
-    		pusher.set(false);
-    	}
     	*/
+    	
+    	
     }
     
     /**
@@ -364,6 +427,7 @@ public class Robot extends IterativeRobot {
     	liftWait = false;
     	liftDown = false;
     	unloadCounter = 0;
+    	autoLiftCounter = 0;
     	
     }
 
@@ -440,17 +504,17 @@ public class Robot extends IterativeRobot {
         			liftDown = false;
 				
         		}else if(liftUp){ //go up to dogs
-        			if(liftEncoder.getDistance() > (upperSetPoint + 40) || liftUpperLimit.get()){
+        			if(liftEncoder.getDistance() > (upperSetPoint + 20) || liftUpperLimit.get()){
         				liftUp = false;
         				liftWait = true;
         				liftDown = false;
         				
         			}
-				
+        			autoLiftCounter = 0;
         			lift.set(0.75);
         		}else if(liftWait){
         			autoLiftCounter++;
-        			if(autoLiftCounter > 100){
+        			if(autoLiftCounter > 50){
         				liftUp = false;
         				liftWait = false;
         				liftDown = true;
@@ -545,14 +609,15 @@ public class Robot extends IterativeRobot {
         
 //============================================================================================
         Timer.delay(0.005);
-        System.out.println(autoLiftCounter);
+        //System.out.println(autoLiftCounter);
 		//System.out.println(toteInRobot.get());
-        System.out.println(liftUpperLimit.get());
+        //System.out.println(liftUpperLimit.get());
         //System.out.println(liftEncoder.getDistance());
         //System.out.println(liftUpperLimit.get() + " upper");
         //System.out.println(liftLowerLimit.get() + " lower");
         //System.out.println(liftEncoder.getDistance());
-        //System.out.println(toteInRobot.get());
+        System.out.println(backLeftEncoder.getDistance());
+        //System.out.println(gyro.getAngle());
 
     }
 
