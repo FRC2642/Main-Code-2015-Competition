@@ -67,7 +67,7 @@ public class Robot extends IterativeRobot {
     	dogs = new Solenoid(0);
     	pusher = new Solenoid(1);
     	flipper = new Solenoid(2);
-    	
+    	arm = new Solenoid(3);
     }
     
     /**
@@ -213,9 +213,9 @@ public class Robot extends IterativeRobot {
         	liftWait = false;
         	
         	if(auxStick.getRawButton(3) && !liftUpperLimit.get() && liftEncoder.getDistance() < upperSetPoint){  //up
-            	lift.set(0.8);
+            	lift.set(1);
             }else if(auxStick.getRawButton(2) && !liftLowerLimit.get() && liftEncoder.getDistance() > lowerSetPoint){  //down
-            	lift.set(-0.8);
+            	lift.set(-0.9);
             
             }else if(false){ //set point //debug me!!!!!!!!!!!!!!!!!!!
             	if(liftEncoder.getDistance() > 200){ 
