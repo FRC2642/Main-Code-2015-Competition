@@ -25,6 +25,7 @@ public class Robot extends IterativeRobot {
 	Encoder backRightEncoder; Encoder backLeftEncoder;
 	final int lowerSetPoint = 80;
 	final int upperSetPoint = 1250;
+	final int autoTimeout = 1900;
 	
 	Compressor compressor;
 	Solenoid dogs;
@@ -75,86 +76,120 @@ public class Robot extends IterativeRobot {
      * This function is run once each time the robot enters autonomous mode
      */
     public void autonomousInit() {
+    	
     	autoLoopCounter = 0;
     	gyro.reset();
         //backRightEncoder.reset();
     	backLeftEncoder.reset();
     	liftEncoder.reset();
     	compressor.start();
-    	/*
- 	if(auxCard.getRawButton(8)){
     	
-    	while(!toteInRobot.get()){ //pick box 
+ 	if(auxCard.getRawButton(8)){
+ 		
+ 		backLeftEncoder.reset();
+    	while(!toteInRobot.get() && autoLoopCounter < autoTimeout){ //pick box 
     		drive.arcadeDrive(-0.4, 0);
     		rightPicker.set(0.6);
     		leftPicker.set(-0.6);
     		lift.set(0);
     		dogs.set(false);
     		pusher.set(false);
+    		autoLoopCounter++;
+    		Timer.delay(0.005);
+    		System.out.println(autoLoopCounter);
     		
     	}
     	
-    	while(liftEncoder.getDistance() < 400){ //lift up
+    	while(liftEncoder.getDistance() < 400 && autoLoopCounter < autoTimeout){ //lift up
     		drive.arcadeDrive(0, 0);
     		rightPicker.set(0);
     		leftPicker.set(0);
     		lift.set(0.8);
     		dogs.set(false);
     		pusher.set(false);
+    		autoLoopCounter++;
+    		Timer.delay(0.005);
     	}
     	
-    	while(gyro.getAngle() < 85){ //turn right 45
+    	while(gyro.getAngle() < 85 && autoLoopCounter < autoTimeout){ //turn right 45
     		drive.arcadeDrive(0, 0.7);
     		rightPicker.set(0);
     		leftPicker.set(0);
     		lift.set(0);
     		dogs.set(false);
     		pusher.set(false);
+    		autoLoopCounter++;
+    		Timer.delay(0.005);
+    		
     	}
     	backLeftEncoder.reset();
     	
-    	while(backLeftEncoder.getDistance() < 1450){ //drive 4ward 
+    	while(backLeftEncoder.getDistance() < 1450 && autoLoopCounter < autoTimeout){ //drive 4ward 
     		drive.arcadeDrive(-0.7, 0);
     		rightPicker.set(0);
     		leftPicker.set(0);
     		lift.set(0);
     		dogs.set(false);
     		pusher.set(false);
+    		autoLoopCounter++;
+    		Timer.delay(0.005);
+    		
     	}
     	backLeftEncoder.reset();
     	
-    	while(gyro.getAngle() < 175){ //turn right 45
+    	while(gyro.getAngle() < 175 && autoLoopCounter < autoTimeout){ //turn right 45
     		drive.arcadeDrive(0, 0.7);
     		rightPicker.set(0);
     		leftPicker.set(0);
     		lift.set(0);
     		dogs.set(false);
     		pusher.set(false);
+    		autoLoopCounter++;
+    		Timer.delay(0.005);
+    		
     	}
     	backLeftEncoder.reset();
     	
-    	while(!liftLowerLimit.get()){ //lift down
+    	while(!liftLowerLimit.get() && autoLoopCounter < autoTimeout){ //lift down
     		drive.arcadeDrive(0, 0);
     		rightPicker.set(0);
     		leftPicker.set(0);
     		lift.set(-0.8);
     		dogs.set(false);
     		pusher.set(false);
+    		autoLoopCounter++;
+    		Timer.delay(0.005);
+    		
     	}
     	
-    	while(backLeftEncoder.getDistance() > -400){ //do unload
+    	while(backLeftEncoder.getDistance() > -400 && autoLoopCounter < autoTimeout){ //do unload
     		drive.arcadeDrive(0.5, 0);
     		rightPicker.set(-0.5);//reverse rollers
     		leftPicker.set(0.5);
     		lift.set(0);
     		dogs.set(true);
     		pusher.set(true);
+    		autoLoopCounter++;
+    		Timer.delay(0.005);
+    		
     	}
-    	
+ 		
+ 	}else if(auxCard.getRawButton(10)){
+ 		while(backLeftEncoder.getDistance() < 2000 && autoLoopCounter < autoTimeout){ //drive 4ward 
+    		drive.arcadeDrive(-0.7, 0);
+    		rightPicker.set(0);
+    		leftPicker.set(0);
+    		lift.set(0);
+    		dogs.set(false);
+    		pusher.set(false);
+    		autoLoopCounter++;
+    		Timer.delay(0.005);
+    	}
+ 		
  	}else{
  		
- 	}
- 	*/
+ 		}
+ 	
     }
     
     public void autonomousPeriodic() {
@@ -164,12 +199,14 @@ public class Robot extends IterativeRobot {
     	lift.set(0);
     	dogs.set(false);
     	pusher.set(false);
+    	System.out.println("stop");
     	Timer.delay(0.05);
     	
     }
     
     public void teleopInit(){
     	gyro.reset();
+    	backLeftEncoder.reset();
     	//compressor.start();
     	liftEncoder.reset();
     	liftUp = false;
@@ -283,7 +320,7 @@ public class Robot extends IterativeRobot {
         
         if(auxStick.getRawButton(10) && liftLowerLimit.get()){ //reset lift encoder
         	liftEncoder.reset();
-        	System.out.println("encoder reset");
+        	//System.out.println("encoder reset");
         }
 //===================================================================================================
         //picker //unloading
@@ -348,18 +385,19 @@ public class Robot extends IterativeRobot {
         		arm.set(true);
         	}else{
         		arm.set(false);
+        	}
         }
-        }
-        
-        /*if (auxStick.getRawButton(7)) {
+        /*
+        if (auxStick.getRawButton(6)) {
             if (flipperToggle) {
             	// toggle arm
             	flipperToggle = false;
             }
         } else {
         	flipperToggle = true;
-        }*/
-                
+        }
+        System.out.println(flipperToggle);
+          */      
         /*if(auxStick.getRawButton(7) && !flipperToggle){
         	flipperToggle = true;
         	System.out.println("on");
@@ -385,12 +423,12 @@ public class Robot extends IterativeRobot {
         //System.out.println(autoLiftCounter);
 		//System.out.println(toteInRobot.get());
         //System.out.println(liftUpperLimit.get());
-        System.out.println(liftEncoder.getDistance());
-        System.out.println(liftUpperLimit.get() + " upper");
-        System.out.println(liftLowerLimit.get() + " lower");
+        //System.out.println(liftEncoder.getDistance());
+        //System.out.println(liftUpperLimit.get() + " upper");
+        //System.out.println(liftLowerLimit.get() + " lower");
         //System.out.println(liftEncoder.getDistance());
         //System.out.println(backLeftEncoder.getDistance());
-        //System.out.println(gyro.getAngle());
+        System.out.println(gyro.getAngle());
 
     }
 
